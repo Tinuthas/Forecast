@@ -6,4 +6,11 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="loading">Loading</string>
+    <string name="_25_0_c">25.0ºC</string>
+    <string name="feels_like_20_4_c">Feels like 20.4ºC</string>
+    <string name="patchy_rain_possible">Patchy rain possible</string>
+    <string name="wind_se_5_3_m_s">Wind: SE, 5.3 m/s</string>
+    <string name="precipitation_5_mm">Precipitation: 5 mm</string>
+    <string name="visibility_20_km">Visibility: 20 km</string>
 </resources>
