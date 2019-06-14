@@ -14,6 +14,7 @@ import br.com.vinicius.forecast.data.network.ApixuWeatherApiService
 import br.com.vinicius.forecast.data.network.ConnectivityInterceptorImpl
 import br.com.vinicius.forecast.data.network.WeatherNetworkDataSource
 import br.com.vinicius.forecast.data.network.WeatherNetworkDataSourceImpl
+import br.com.vinicius.forecast.internal.glide.GlideApp
 import br.com.vinicius.forecast.ui.base.ScopedFragment
 import kotlinx.android.synthetic.main.current_weather_fragment.*
 import kotlinx.coroutines.Dispatchers
@@ -70,18 +71,29 @@ class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
     }
 
     private fun bindUI() = launch {
+
+        val weatherLocation = viewModel.weatherLocation.await()
+        weatherLocation.observe(this@CurrentWeatherFragment, Observer { location ->
+            if(location == null) return@Observer
+            updateLocation(location.name)
+        })
+
         val currentWeather = viewModel.weather.await()
         currentWeather.observe(this@CurrentWeatherFragment, Observer {
             if(it == null) return@Observer
 
             groupLoading.visibility = View.GONE
-            updateLocation("Sao Paulo")
+
             updateDateToToday()
             updateTemperature(it.temperature, it.feelsLikeTemperature)
             updateCondition(it.conditionText)
             updatePrecipitation(it.precipitationVolume)
             updatWind(it.windDirection, it.windSpeed)
             updateVisibility(it.visibilityDistance)
+
+            GlideApp.with(this@CurrentWeatherFragment)
+                .load("http:${it.conditionIconUrl}")
+                .into(imageViewConditionIcon)
         })
     }
 
@@ -111,19 +123,19 @@ class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
     @SuppressLint("SetTextI18n")
     private fun updatePrecipitation(precipitationVolume: Double) {
         val unitAbbreviation = chooseLocalizedUnitAbbreviation("mm", "in")
-        textViewPrecipitation.text = "Preciptiation: $precipitationVolume $unitAbbreviation"
+        textViewPrecipitation.text = "Precipitation: $precipitationVolume $unitAbbreviation"
     }
 
     @SuppressLint("SetTextI18n")
     private fun updatWind(windDirection: String, windSpeed: Double) {
         val unitAbbreviation = chooseLocalizedUnitAbbreviation("kph", "mph")
-        textViewPrecipitation.text = "Wind: $windDirection, $windSpeed $unitAbbreviation"
+        textViewWind.text = "Wind: $windDirection, $windSpeed $unitAbbreviation"
     }
 
     @SuppressLint("SetTextI18n")
     private fun updateVisibility(visibilityDistance: Double) {
         val unitAbbreviation = chooseLocalizedUnitAbbreviation("km", "mi.")
-        textViewPrecipitation.text = "Visibility: $visibilityDistance $unitAbbreviation"
+        textViewVisibility.text = "Visibility: $visibilityDistance $unitAbbreviation"
     }
 
 }
