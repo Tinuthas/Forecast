@@ -72,13 +72,16 @@ class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
 
     private fun bindUI() = launch {
 
+        val currentWeather = viewModel.weather.await()
+
         val weatherLocation = viewModel.weatherLocation.await()
+
         weatherLocation.observe(this@CurrentWeatherFragment, Observer { location ->
             if(location == null) return@Observer
             updateLocation(location.name)
         })
 
-        val currentWeather = viewModel.weather.await()
+
         currentWeather.observe(this@CurrentWeatherFragment, Observer {
             if(it == null) return@Observer
 
@@ -98,7 +101,7 @@ class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
     }
 
     private fun chooseLocalizedUnitAbbreviation(metric: String, imperial: String): String {
-        return if(viewModel.isMetric) metric else imperial
+        return if(viewModel.isMetricUnit) metric else imperial
     }
 
     private fun updateLocation(location: String) {

@@ -32,8 +32,12 @@ class LocationProviderImpl(
     }
 
     private fun hasCustomLocationChanged(lastWeatherLocation: WeatherLocation): Boolean {
-        val customLocationName = getCustomLocationName()
-        return customLocationName != lastWeatherLocation.name
+        if(!isUsingDeviceLocation()){
+            val customLocationName = getCustomLocationName()
+            return customLocationName != lastWeatherLocation.name
+        }
+        return false
+
     }
 
     private fun getCustomLocationName(): String? {
@@ -52,8 +56,10 @@ class LocationProviderImpl(
 
     @SuppressLint("MissingPermission")
     private fun getLastDeviceLocation(): Deferred<Location?> {
-        return if(hasLocationPermission()) fusedLocationProviderClient.lastLocation.asDeferred()
-        else throw LocationPermissionNotGrantedException()
+        return if(hasLocationPermission())
+            fusedLocationProviderClient.lastLocation.asDeferred()
+        else
+            throw LocationPermissionNotGrantedException()
     }
 
     private fun hasLocationPermission(): Boolean {

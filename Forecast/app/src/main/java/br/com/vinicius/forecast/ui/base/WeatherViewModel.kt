@@ -1,20 +1,22 @@
-package br.com.vinicius.forecast.ui.weather.current
+package br.com.vinicius.forecast.ui.base
 
 import androidx.lifecycle.ViewModel
 import br.com.vinicius.forecast.data.provider.UnitProvider
 import br.com.vinicius.forecast.data.repository.ForecastRepository
 import br.com.vinicius.forecast.internal.UnitSystem
 import br.com.vinicius.forecast.internal.lazyDeferred
-import br.com.vinicius.forecast.ui.base.WeatherViewModel
 
-class CurrentWeatherViewModel(
+abstract class WeatherViewModel(
     private val forecastRepository: ForecastRepository,
     unitProvider: UnitProvider
-) : WeatherViewModel(forecastRepository, unitProvider){
+) : ViewModel(){
 
+    private val unitSystem = unitProvider.getUnitSystem()
 
-    val weather by lazyDeferred {
-        forecastRepository.getCurrentWeather(super.isMetricUnit)
+    val isMetricUnit: Boolean
+            get() = unitSystem == UnitSystem.METRIC
+
+    val weatherLocation by lazyDeferred {
+        forecastRepository.getWeatherLocation()
     }
-
 }

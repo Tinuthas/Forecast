@@ -1,4 +1,4 @@
-package br.com.vinicius.forecast.data.db.unitlocalized
+package br.com.vinicius.forecast.data.db.unitlocalized.current
 
 interface UnitSpecificCurrentWeatherEntry {
     val temperature: Double
